@@ -23,3 +23,5 @@ Take the inputs (transcription and diarization) and generate output (transcripti
 ### **GET** to http://localhost:5000/hello
 Test the Flask setup
 
+### **POST** to http://localhost:5000/process-transcription
+Processes military transcriptions by adding definitions to specialized terms using GPT-4o.
