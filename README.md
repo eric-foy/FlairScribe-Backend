@@ -1,7 +1,7 @@
 ## Required Python Packages
 Tested with python version: **Python 3.12.3** and **Python 3.10**
 ```
-pip install flask openai==0.28 pandas python-docx openpyxl requests python-dotenv werkzeug numpy flask-cors
+pip install flask openai==0.28 pandas python-docx openpyxl requests python-dotenv werkzeug numpy flask_cors
 ```
 
 
