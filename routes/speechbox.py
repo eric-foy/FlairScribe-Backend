@@ -1,10 +1,20 @@
 import numpy as np
-from flask import request
+from flask import request, jsonify
+import os
+from dotenv import load_dotenv
 
 from app import app
 
+# Load API key from .env file
+load_dotenv()
+my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
+my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
+
 @app.route("/speechbox", methods=['POST'])
 def speechbox():
+    if request.authorization.username != my_auth_user or request.authorization.password != my_auth_password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
     group_by_speaker = True
 
     json_data = request.get_json()

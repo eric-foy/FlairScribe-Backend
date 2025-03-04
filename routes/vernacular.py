@@ -12,6 +12,8 @@ from app import app
 # Load API key from .env file
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
+my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
 # Configure folders
 UPLOAD_FOLDER = 'uploads'
@@ -106,6 +108,9 @@ def read_docx(file_path):
 
 @app.route('/process-transcription', methods=['POST'])
 def process_transcription():
+    if request.authorization.username != my_auth_user or request.authorization.password != my_auth_password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
     """API endpoint to process a transcription with military term definitions."""
     try:
         # Check if files were uploaded
