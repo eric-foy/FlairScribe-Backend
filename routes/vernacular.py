@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from docx import Document  # For handling .docx files
-from util import delete_files_in_directory
+from util import misc
 
 from app import app
 
@@ -174,7 +174,7 @@ def process_transcription():
         processed_text = " ".join(processed_chunks)
         
         # Clean up uploaded vernacular files
-        delete_files_in_directory(UPLOAD_FOLDER_VERNACULAR)
+        misc.delete_files_in_directory(UPLOAD_FOLDER_VERNACULAR)
 
         try:
             for path in excel_paths:

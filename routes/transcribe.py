@@ -4,7 +4,7 @@ import whisper
 import warnings
 import time
 from werkzeug.utils import secure_filename
-from util import delete_files_in_directory
+from util import misc
 
 from app import app
 
@@ -78,7 +78,7 @@ def process_all_files():
                 except Exception as e:
                     errors.append(f"Error processing {filename}: {str(e)}")
         
-        delete_files_in_directory(UPLOAD_FOLDER_TRANSCRIBE)
+        misc.delete_files_in_directory(UPLOAD_FOLDER_TRANSCRIBE)
 
         return jsonify({
             "processed_files": processed_files,
