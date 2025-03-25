@@ -54,7 +54,7 @@ def process_all_files():
         return jsonify({"msg": "Bad username or password"}), 401
 
     try:
-        print("Received request to /process-transcription")
+        print("Received request to /transcribe")
         print(f"Request files: {list(request.files.keys())}")
 
         if 'audiofiles' not in request.files:
