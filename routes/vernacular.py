@@ -17,16 +17,12 @@ my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
 # Configure folders
 UPLOAD_FOLDER = 'uploads/vernacular'
-OUTPUT_FOLDER = 'output/vernacular'
 
 # Create folders if they don't exist
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
     
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
 
 def process_chunk_with_gpt(chunk, vernacular_prompt):
     """Process a text chunk with GPT-4o to add military term definitions."""
@@ -176,20 +172,6 @@ def process_transcription():
         # Combine processed chunks
         processed_text = " ".join(processed_chunks)
         
-        # Always save processed text as .docx file
-        output_filename = transcription_filename
-        if not output_filename.lower().endswith('.docx'):
-            output_filename = output_filename + '.docx'
-        
-        # Use the specified output folder
-        output_path = os.path.join(app.config['OUTPUT_FOLDER'], output_filename)
-        
-        # Save as docx file
-        doc = Document()
-        doc.add_paragraph(processed_text)
-        doc.save(output_path)
-        print(f"Processed file saved to: {output_path}")
-        
         # Clean up temporary vernacular files, but keep the transcription
         try:
             for path in excel_paths:
@@ -202,8 +184,7 @@ def process_transcription():
             'message': 'Transcription processed successfully',
             'terms_processed': len(vernacular_dict),
             'chunks_processed': len(chunks),
-            'processed_text': processed_text,
-            'output_file': output_filename  # Include the output filename in the response
+            'processed_text': processed_text
         })
         
     except Exception as e:
