@@ -23,5 +23,8 @@ Take the inputs (transcription and diarization) and generate output (transcripti
 ### **GET** to http://localhost:5000/hello
 Test the Flask setup
 
-### **POST** to http://localhost:5000/process-transcription
+### **POST** to http://localhost:5000/vernacular
 Processes military transcriptions by adding definitions to specialized terms using GPT-4o.
+
+### **POST** to http://localhost:5000/transcribe
+Takes 1 or more audio files and transcribes them using a local whisper model.
