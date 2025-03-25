@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from docx import Document  # For handling .docx files
+from util import delete_files_in_directory
 
 from app import app
 
@@ -16,13 +17,13 @@ my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
 my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
 # Configure folders
-UPLOAD_FOLDER = 'uploads/vernacular'
+UPLOAD_FOLDER_VERNACULAR = 'uploads/vernacular'
 
 # Create folders if they don't exist
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+if not os.path.exists(UPLOAD_FOLDER_VERNACULAR):
+    os.makedirs(UPLOAD_FOLDER_VERNACULAR)
     
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER_VERNACULAR'] = UPLOAD_FOLDER_VERNACULAR
 
 def process_chunk_with_gpt(chunk, vernacular_prompt):
     """Process a text chunk with GPT-4o to add military term definitions."""
@@ -131,13 +132,13 @@ def process_transcription():
         
         # Save uploaded transcription file
         transcription_filename = secure_filename(transcription_file.filename)
-        transcription_path = os.path.join(app.config['UPLOAD_FOLDER'], transcription_filename)
+        transcription_path = os.path.join(app.config['UPLOAD_FOLDER_VERNACULAR'], transcription_filename)
         transcription_file.save(transcription_path)
         
         # Save vernacular files
         excel_paths = []
         for vernacular_file in vernacular_files:
-            vernacular_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(vernacular_file.filename))
+            vernacular_path = os.path.join(app.config['UPLOAD_FOLDER_VERNACULAR'], secure_filename(vernacular_file.filename))
             vernacular_file.save(vernacular_path)
             excel_paths.append(vernacular_path)
         
@@ -172,7 +173,9 @@ def process_transcription():
         # Combine processed chunks
         processed_text = " ".join(processed_chunks)
         
-        # Clean up temporary vernacular files, but keep the transcription
+        # Clean up uploaded vernacular files
+        delete_files_in_directory(UPLOAD_FOLDER_VERNACULAR)
+
         try:
             for path in excel_paths:
                 os.remove(path)
