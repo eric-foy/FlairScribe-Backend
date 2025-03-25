@@ -1,3 +1,5 @@
+import os
+
 def delete_files_in_directory(directory_path):
     try:
         files = os.listdir(directory_path)
