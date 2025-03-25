@@ -4,6 +4,7 @@ import whisper
 import warnings
 import time
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
 from util import misc
 
 from app import app
@@ -12,6 +13,10 @@ warnings.filterwarnings(
     "ignore",
     message="You are using `torch.load` with `weights_only=False`"
 )
+
+load_dotenv()
+my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
+my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
 # Define the directories for input and output
 UPLOAD_FOLDER_TRANSCRIBE = "uploads/transcribe"
@@ -44,6 +49,9 @@ def transcribe_audio_file(file_path):
 def process_all_files():
     processed_files = []
     errors = []
+
+    if request.authorization.username != my_auth_user or request.authorization.password != my_auth_password:
+        return jsonify({"msg": "Bad username or password"}), 401
 
     try:
         print("Received request to /process-transcription")
