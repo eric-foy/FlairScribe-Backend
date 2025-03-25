@@ -103,7 +103,7 @@ def read_docx(file_path):
         print(f"Error reading .docx file: {e}")
         return None
 
-@app.route('/process-transcription', methods=['POST'])
+@app.route('/vernacular', methods=['POST'])
 def process_transcription():
     if request.authorization.username != my_auth_user or request.authorization.password != my_auth_password:
         return jsonify({"msg": "Bad username or password"}), 401
@@ -111,7 +111,7 @@ def process_transcription():
     """API endpoint to process a transcription with military term definitions."""
     try:
         # Check if files were uploaded
-        print("Received request to /process-transcription")
+        print("Received request to /vernacular")
         print(f"Request files: {list(request.files.keys())}")
 
         if 'transcription' not in request.files:
