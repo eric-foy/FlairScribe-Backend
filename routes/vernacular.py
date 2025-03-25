@@ -16,8 +16,8 @@ my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
 my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
 # Configure folders
-UPLOAD_FOLDER = 'uploads'
-OUTPUT_FOLDER = 'output'
+UPLOAD_FOLDER = 'uploads/vernacular'
+OUTPUT_FOLDER = 'output/vernacular'
 
 # Create folders if they don't exist
 if not os.path.exists(UPLOAD_FOLDER):
