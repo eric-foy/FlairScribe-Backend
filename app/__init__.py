@@ -11,3 +11,4 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 from routes import hello
 from routes import speechbox
 from routes import vernacular
+from routes import transcribe
