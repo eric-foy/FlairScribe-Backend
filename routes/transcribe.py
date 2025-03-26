@@ -6,6 +6,7 @@ import time
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from util import misc
+import tempfile
 
 from app import app
 
@@ -18,14 +19,6 @@ load_dotenv()
 my_auth_user = os.getenv("FLAIRSCRIBE_API_USER")
 my_auth_password = os.getenv("FLAIRSCRIBE_API_PASSWORD")
 
-# Define the directories for input and output
-UPLOAD_FOLDER_TRANSCRIBE = "uploads/transcribe"
-
-# Create folders if they don't exist
-if not os.path.exists(UPLOAD_FOLDER_TRANSCRIBE):
-    os.makedirs(UPLOAD_FOLDER_TRANSCRIBE)
-
-app.config['UPLOAD_FOLDER_TRANSCRIBE'] = UPLOAD_FOLDER_TRANSCRIBE
 
 # Load the Whisper model (adjust the model type as needed)
 model = whisper.load_model("tiny.en")  # 'tiny.en', 'tiny', 'base.en', 'base', 'small.en', 'small', 'medium.en', 'medium', 'large-v1', 'large-v2', 'large-v3', 'large', 'large-v3-turbo', 'turbo'
@@ -52,6 +45,10 @@ def process_all_files():
 
     if request.authorization.username != my_auth_user or request.authorization.password != my_auth_password:
         return jsonify({"msg": "Bad username or password"}), 401
+    
+    temp_dir = tempfile.TemporaryDirectory()
+    print(temp_dir.name)
+    UPLOAD_FOLDER_TRANSCRIBE = temp_dir.name
 
     try:
         print("Received request to /transcribe")
@@ -66,7 +63,7 @@ def process_all_files():
         
         audio_paths = []
         for audio_file in audio_files:
-            audio_path = os.path.join(app.config['UPLOAD_FOLDER_TRANSCRIBE'], secure_filename(audio_file.filename))
+            audio_path = os.path.join(UPLOAD_FOLDER_TRANSCRIBE, secure_filename(audio_file.filename))
             audio_file.save(audio_path)
             audio_paths.append(audio_path)
 
@@ -86,7 +83,8 @@ def process_all_files():
                 except Exception as e:
                     errors.append(f"Error processing {filename}: {str(e)}")
         
-        misc.delete_files_in_directory(UPLOAD_FOLDER_TRANSCRIBE)
+        #misc.delete_files_in_directory(UPLOAD_FOLDER_TRANSCRIBE)
+        temp_dir.cleanup()
 
         return jsonify({
             "processed_files": processed_files,
